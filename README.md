@@ -27,6 +27,8 @@ RSVP, comments, and admin activate once Supabase is connected.
      replies, likes) + the `post-images` storage bucket.
    - [`supabase/profile-photos.sql`](supabase/profile-photos.sql) — profile photos
      (`avatar_path` + the `avatars` storage bucket).
+   - [`supabase/notifications.sql`](supabase/notifications.sql) — in-app notifications
+     (table + triggers that notify a post's author on replies/likes).
    - [`supabase/seed.sql`](supabase/seed.sql) — optional: five sample hikes.
 3. **Add env vars:** copy `.env.local.example` → `.env.local` and fill in the Project URL
    and anon key (Supabase → Project Settings → API):

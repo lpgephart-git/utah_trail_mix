@@ -2,7 +2,13 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { avatarUrl, postImageUrl } from "@/lib/storage";
 import { getSeedHike, seedComments, seedHikes } from "@/lib/seed";
-import type { Comment, FeedPost, HikeWithCounts, Profile } from "@/lib/types";
+import type {
+  AppNotification,
+  Comment,
+  FeedPost,
+  HikeWithCounts,
+  Profile,
+} from "@/lib/types";
 
 /** The community feed: posts newest-first with author, likes, and replies. */
 export async function getFeed(): Promise<FeedPost[]> {
@@ -140,6 +146,77 @@ export async function getMemberCount(): Promise<number> {
     .from("profiles")
     .select("id", { count: "exact", head: true });
   return count ?? 0;
+}
+
+/** Unread notification count for the header bell. Returns 0 if the migration
+ *  hasn't run yet (so the header never crashes). */
+export async function getUnreadCount(): Promise<number> {
+  if (!isSupabaseConfigured) return 0;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return 0;
+  const { count, error } = await supabase
+    .from("notifications")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("read", false);
+  if (error) return 0;
+  return count ?? 0;
+}
+
+/** The current member's notifications, newest first. */
+export async function getNotifications(): Promise<AppNotification[]> {
+  if (!isSupabaseConfigured) return [];
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+  const { data, error } = await supabase
+    .from("notifications")
+    .select(
+      `id, type, post_id, read, created_at,
+       actor:profiles!notifications_actor_id_fkey(full_name, avatar_path)`,
+    )
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (error) return [];
+
+  type Row = {
+    id: string;
+    type: "reply" | "like";
+    post_id: string | null;
+    read: boolean;
+    created_at: string;
+    actor: { full_name: string; avatar_path: string | null } | null;
+  };
+  return (data as unknown as Row[]).map((n) => ({
+    id: n.id,
+    type: n.type,
+    post_id: n.post_id,
+    read: n.read,
+    created_at: n.created_at,
+    actor_name: n.actor?.full_name || "Someone",
+    actor_avatar_url: avatarUrl(n.actor?.avatar_path ?? null),
+  }));
+}
+
+/** Mark all of the current member's notifications read. */
+export async function markNotificationsRead(): Promise<void> {
+  if (!isSupabaseConfigured) return;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+  await supabase
+    .from("notifications")
+    .update({ read: true })
+    .eq("user_id", user.id)
+    .eq("read", false);
 }
 
 /** The signed-in member's profile, or null when not authenticated / not configured. */

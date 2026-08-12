@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { getCurrentProfile } from "@/lib/data";
+import { getCurrentProfile, getUnreadCount } from "@/lib/data";
 import { signOut } from "@/app/auth/actions";
 import { avatarUrl } from "@/lib/storage";
 import { Avatar } from "./Avatar";
 
 export async function SiteHeader() {
   const profile = await getCurrentProfile();
+  const unread = profile ? await getUnreadCount() : 0;
 
   return (
     <header className="sticky top-0 z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant/40">
@@ -52,6 +53,20 @@ export async function SiteHeader() {
 
           {profile ? (
             <div className="flex items-center gap-3">
+              <Link
+                href="/notifications"
+                aria-label={`Notifications${unread > 0 ? ` (${unread} unread)` : ""}`}
+                className="relative text-on-surface-variant hover:text-primary"
+              >
+                <span aria-hidden className="text-xl">
+                  🔔
+                </span>
+                {unread > 0 && (
+                  <span className="absolute -right-1.5 -top-1 min-w-4 rounded-full bg-primary px-1 text-center text-[10px] font-medium leading-4 text-on-primary">
+                    {unread > 9 ? "9+" : unread}
+                  </span>
+                )}
+              </Link>
               <Link href="/account" aria-label="Your profile" className="hover:opacity-80">
                 <Avatar
                   name={profile.full_name}

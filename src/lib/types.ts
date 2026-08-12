@@ -80,6 +80,16 @@ export type HikeWithCounts = Hike & {
   going_count: number;
 };
 
+export type AppNotification = {
+  id: string;
+  type: "reply" | "like";
+  post_id: string | null;
+  read: boolean;
+  created_at: string;
+  actor_name: string;
+  actor_avatar_url: string | null;
+};
+
 export type FeedComment = {
   id: string;
   body: string;

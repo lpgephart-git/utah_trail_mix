@@ -15,7 +15,10 @@ export function PostCard({
   canReply: boolean;
 }) {
   return (
-    <article className="rounded-xl border border-surface-variant bg-surface-container-lowest p-5">
+    <article
+      id={`post-${post.id}`}
+      className="scroll-mt-24 rounded-xl border border-surface-variant bg-surface-container-lowest p-5"
+    >
       <div className="flex items-start gap-3">
         <Avatar name={post.author_name} imageUrl={post.author_avatar_url} />
         <div className="min-w-0 flex-1">
