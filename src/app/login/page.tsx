@@ -5,6 +5,8 @@ import Link from "next/link";
 import { signInWithPassword, type AuthState } from "@/app/auth/actions";
 
 const initial: AuthState = {};
+const inputClass =
+  "rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-base text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:outline-none";
 
 export default function LoginPage() {
   const [state, formAction, pending] = useActionState(signInWithPassword, initial);
@@ -15,7 +17,7 @@ export default function LoginPage() {
         Welcome back
       </h1>
       <p className="mt-2 text-on-surface-variant">
-        Log in to RSVP and join the conversation on upcoming hikes.
+        Log in to RSVP and join the conversation.
       </p>
 
       <form action={formAction} className="mt-8 flex flex-col gap-4">
@@ -26,17 +28,12 @@ export default function LoginPage() {
             type="email"
             required
             placeholder="jane@school.edu"
-            className="rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-base text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:outline-none"
+            className={inputClass}
           />
         </label>
         <label className="flex flex-col gap-1 text-sm">
           <span className="font-medium text-on-surface">Password</span>
-          <input
-            name="password"
-            type="password"
-            required
-            className="rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-base text-on-surface focus:border-primary focus:outline-none"
-          />
+          <input name="password" type="password" required className={inputClass} />
         </label>
 
         {state.error && <p className="text-sm text-error">{state.error}</p>}

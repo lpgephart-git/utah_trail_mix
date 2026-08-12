@@ -39,18 +39,31 @@ RSVP, comments, and admin activate once Supabase is connected.
 
 4. **Restart `npm run dev`.** The app now uses the database.
 
-### Brand the verification email
+### Email templates (REQUIRED for the 6-digit code)
 
-Supabase → Authentication → Email Templates → **Magic Link** (this flow uses a magic
-link to verify, then the member sets a password on `/welcome`). Customize the subject and
-body for Utah Trail Mix, e.g.:
+Signup/login is passwordless: members get a **6-digit code** to type in (no link to click,
+so corporate/school email scanners can't consume it). For the code to appear, the email
+must include `{{ .Token }}`.
 
-> **Subject:** Confirm your spot with Utah Trail Mix 🥾
-> **Body:** Welcome to the trail! Tap below to confirm your email and set your password.
-> `{{ .ConfirmationURL }}`
+Supabase → Authentication → Email Templates → edit **both** "Confirm signup" and
+"Magic Link", setting the body to something like:
 
-Also set **Authentication → URL Configuration → Site URL** to your site, and add
-`http://localhost:3000/**` (and later your Vercel URL) to the redirect allow-list.
+```html
+<h2>Welcome to Utah Trail Mix 🥾</h2>
+<p>Here's your sign-in code:</p>
+<p style="font-size:28px;font-weight:700;letter-spacing:6px">{{ .Token }}</p>
+<p>Enter it on the site to finish signing in. The code expires in about an hour.
+If you didn't request it, you can ignore this email.</p>
+```
+
+Subject, e.g.: `Your Utah Trail Mix sign-in code`.
+
+URL Configuration / redirect allow-lists aren't needed for the code flow, but setting
+**Site URL** to your deployed URL is still good practice.
+
+> Note: Supabase's built-in email sender is rate-limited (a few/hour, testing only).
+> For real use, configure custom SMTP (Authentication → SMTP Settings) — Gmail SMTP works
+> without a domain via an app password; Resend/SendGrid/Postmark need a verified domain.
 
 ### Make yourself an admin
 
