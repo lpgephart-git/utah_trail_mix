@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Utah Trail Mix
 
-## Getting Started
+A hiking community site for Utah educators — nutrition pros, school nurses, health & PE
+teachers, and wellness folks. Monthly Wasatch Front hikes with a schedule, custom RSVPs,
+a per-hike comment board, and admin-managed hikes.
 
-First, run the development server:
+Built with **Next.js 16** (App Router), **Tailwind CSS v4**, and **Supabase** (Postgres +
+Auth). Planning notes live in [`docs/`](docs) (PLAN, DESIGN, TRAILS).
+
+## Preview mode (no setup)
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. With no Supabase credentials the site runs on **seed data**
+so you can click through the landing, schedule, and a hike page immediately. Sign-up,
+RSVP, comments, and admin activate once Supabase is connected.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Going live with Supabase (free tier)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Create a project** at [supabase.com](https://supabase.com).
+2. **Run the schema:** open the SQL editor and paste all of
+   [`supabase/schema.sql`](supabase/schema.sql). This creates the tables (profiles,
+   hikes, rsvps, comments), row-level security, and the new-user trigger.
+3. **Add env vars:** copy `.env.local.example` → `.env.local` and fill in the Project URL
+   and anon key (Supabase → Project Settings → API):
 
-## Learn More
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=...
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. **Restart `npm run dev`.** The app now uses the database.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Brand the verification email
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Supabase → Authentication → Email Templates → **Magic Link** (this flow uses a magic
+link to verify, then the member sets a password on `/welcome`). Customize the subject and
+body for Utah Trail Mix, e.g.:
 
-## Deploy on Vercel
+> **Subject:** Confirm your spot with Utah Trail Mix 🥾
+> **Body:** Welcome to the trail! Tap below to confirm your email and set your password.
+> `{{ .ConfirmationURL }}`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Also set **Authentication → URL Configuration → Site URL** to your site, and add
+`http://localhost:3000/**` (and later your Vercel URL) to the redirect allow-list.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Make yourself an admin
+
+Sign up once through the site, then in the Supabase SQL editor:
+
+```sql
+update public.profiles set is_admin = true
+where id = (select id from auth.users where email = 'you@example.com');
+```
+
+Admins get the **Admin** nav link and can create, edit, publish, and delete hikes.
+RLS enforces this at the database level too.
+
+## Maps & embeds (reliable + free)
+
+Per hike you can set three optional fields in the admin form:
+
+- **Strava route embed URL** — build a public route in Strava's planner and paste its
+  embed URL; it renders as an interactive map on the hike page.
+- **AllTrails URL** — deep link out to the full trail page (free, no account needed).
+- **Google Maps directions URL** — e.g. `https://maps.google.com/?q=<trailhead>`.
+
+The hike page shows whatever is present and skips the rest.
+
+## Deploy (Vercel)
+
+1. Push this repo to GitHub.
+2. Import it at [vercel.com](https://vercel.com) (free Hobby plan).
+3. Add the same env vars, setting `NEXT_PUBLIC_SITE_URL` to your Vercel URL.
+4. Add `https://your-app.vercel.app/**` to Supabase's redirect allow-list.
+
+## Project map
+
+```
+src/app             routes: landing, schedule, about, join, login, welcome,
+                    hikes/[id], admin/*, auth/*
+src/components      SiteHeader, SiteFooter, HikeCard, RsvpPanel, CommentForm, HikeForm
+src/lib             supabase clients, data access, types, seed data, formatting
+supabase/schema.sql database schema + RLS
+src/proxy.ts        session refresh + /admin guard (Next 16 "proxy" convention)
+```
