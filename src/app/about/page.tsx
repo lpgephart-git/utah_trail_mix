@@ -23,10 +23,10 @@ export default async function AboutPage() {
           up and come along.
         </p>
         <p>
-          We hike the Wasatch Front about once a month, with a range of difficulty
-          so nobody has to sit one out. Every hike lists the trail, the meetup
-          details, and a map — and once you&apos;re a member you can RSVP and chat
-          with the group right here on the site.
+          We hike the Wasatch Front on the <strong>3rd Saturday of the month</strong>,
+          with a range of difficulty so nobody has to sit one out. Every hike lists
+          the trail, the meetup details, and a map — and once you&apos;re a member you
+          can RSVP and chat with the group right here on the site.
         </p>
         <p>
           The whole idea is simple: fresh air, good company, and genuine

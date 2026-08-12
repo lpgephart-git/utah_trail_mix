@@ -15,8 +15,9 @@ export default async function SchedulePage() {
           Upcoming hikes
         </h1>
         <p className="mt-2 max-w-2xl text-lg text-on-surface-variant">
-          Join fellow Utah educators on the trails. We schedule around teaching
-          hours and a range of fitness levels — come to one or come to them all.
+          We hike the <span className="font-medium text-on-surface">3rd Saturday
+          of the month</span>, with a range of fitness levels — come to one or come
+          to them all.
         </p>
       </header>
 
