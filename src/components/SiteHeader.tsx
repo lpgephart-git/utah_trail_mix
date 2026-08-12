@@ -20,6 +20,14 @@ export async function SiteHeader() {
         </Link>
 
         <nav className="flex items-center gap-4 text-sm sm:gap-6">
+          {profile && (
+            <Link
+              href="/"
+              className="font-medium text-on-surface-variant hover:text-primary"
+            >
+              The Mix
+            </Link>
+          )}
           <Link
             href="/schedule"
             className="font-medium text-on-surface-variant hover:text-primary"
