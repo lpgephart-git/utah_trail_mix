@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { RsvpPanel } from "@/components/RsvpPanel";
 import { CommentForm } from "@/components/CommentForm";
+import { StravaEmbed } from "@/components/StravaEmbed";
 import { formatHikeDate } from "@/lib/format";
 import type { Rsvp } from "@/lib/types";
 
@@ -107,14 +108,17 @@ export default async function HikeDetailPage(props: PageProps<"/hikes/[id]">) {
             <h2 className="font-display text-2xl font-bold text-on-surface">
               Trail & route
             </h2>
-            {hike.strava_embed && (
-              <iframe
-                title="Route map"
-                src={hike.strava_embed}
-                className="mt-3 h-96 w-full rounded-xl border border-outline-variant"
-                loading="lazy"
-              />
-            )}
+            {hike.strava_embed &&
+              (hike.strava_embed.includes("strava-embed-placeholder") ? (
+                <StravaEmbed snippet={hike.strava_embed} />
+              ) : (
+                <iframe
+                  title="Route map"
+                  src={hike.strava_embed}
+                  className="mt-3 h-96 w-full rounded-xl border border-outline-variant"
+                  loading="lazy"
+                />
+              ))}
             <div className="mt-3 flex flex-wrap gap-3">
               {hike.alltrails_url && (
                 <a

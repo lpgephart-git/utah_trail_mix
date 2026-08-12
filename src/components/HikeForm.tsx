@@ -82,10 +82,11 @@ export function HikeForm({
         />
       </Labeled>
 
-      <Labeled label="Strava route embed URL">
-        <input
+      <Labeled label="Strava embed code">
+        <textarea
           name="strava_embed"
-          placeholder="https://www.strava.com/…/embed"
+          rows={3}
+          placeholder='Strava → your route → Share → Embed → "Copy Embed Code" and paste the whole snippet here (starts with <div class="strava-embed-placeholder"…). Tip: choose "Responsive" width.'
           defaultValue={hike?.strava_embed ?? ""}
           className={inputClass}
         />

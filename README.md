@@ -68,8 +68,9 @@ RLS enforces this at the database level too.
 
 Per hike you can set three optional fields in the admin form:
 
-- **Strava route embed URL** — build a public route in Strava's planner and paste its
-  embed URL; it renders as an interactive map on the hike page.
+- **Strava embed code** — build a public route in Strava, then Share → Embed → Copy Embed
+  Code and paste the whole snippet (the `<div class="strava-embed-placeholder">…</div>`
+  plus its script). It hydrates into an interactive map on the hike page.
 - **AllTrails URL** — deep link out to the full trail page (free, no account needed).
 - **Google Maps directions URL** — e.g. `https://maps.google.com/?q=<trailhead>`.
 
