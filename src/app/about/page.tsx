@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { getCurrentProfile } from "@/lib/data";
 
 export const metadata = {
   title: "About — Utah Trail Mix",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const profile = await getCurrentProfile();
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <h1 className="font-display text-4xl font-bold text-on-surface">
@@ -31,12 +34,21 @@ export default function AboutPage() {
         </p>
       </div>
       <div className="mt-8">
-        <Link
-          href="/join"
-          className="rounded-full bg-primary px-6 py-3 font-medium text-on-primary hover:bg-primary-container"
-        >
-          Join the group
-        </Link>
+        {profile ? (
+          <Link
+            href="/schedule"
+            className="rounded-full bg-primary px-6 py-3 font-medium text-on-primary hover:bg-primary-container"
+          >
+            See the schedule
+          </Link>
+        ) : (
+          <Link
+            href="/join"
+            className="rounded-full bg-primary px-6 py-3 font-medium text-on-primary hover:bg-primary-container"
+          >
+            Join the group
+          </Link>
+        )}
       </div>
     </div>
   );

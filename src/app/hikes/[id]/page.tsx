@@ -108,8 +108,8 @@ export default async function HikeDetailPage(props: PageProps<"/hikes/[id]">) {
             <h2 className="font-display text-2xl font-bold text-on-surface">
               Trail & route
             </h2>
-            {hike.strava_embed &&
-              (hike.strava_embed.includes("strava-embed-placeholder") ? (
+            {hike.strava_embed ? (
+              hike.strava_embed.includes("strava-embed-placeholder") ? (
                 <StravaEmbed snippet={hike.strava_embed} />
               ) : (
                 <iframe
@@ -118,7 +118,23 @@ export default async function HikeDetailPage(props: PageProps<"/hikes/[id]">) {
                   className="mt-3 h-96 w-full rounded-xl border border-outline-variant"
                   loading="lazy"
                 />
-              ))}
+              )
+            ) : (
+              <>
+                <iframe
+                  title="Trailhead map"
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(
+                    hike.trailhead || hike.title,
+                  )}&output=embed`}
+                  className="mt-3 h-80 w-full rounded-xl border border-outline-variant"
+                  loading="lazy"
+                />
+                <p className="mt-2 text-xs text-on-surface-variant">
+                  Showing the trailhead. Add a Strava route in the admin editor to
+                  show the full route here.
+                </p>
+              </>
+            )}
             <div className="mt-3 flex flex-wrap gap-3">
               {hike.alltrails_url && (
                 <a
