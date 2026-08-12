@@ -6,6 +6,7 @@ import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { RsvpPanel } from "@/components/RsvpPanel";
 import { CommentForm } from "@/components/CommentForm";
 import { StravaEmbed } from "@/components/StravaEmbed";
+import { googleCalUrl } from "@/lib/calendar";
 import { formatHikeDate } from "@/lib/format";
 import type { Rsvp } from "@/lib/types";
 
@@ -219,7 +220,36 @@ export default async function HikeDetailPage(props: PageProps<"/hikes/[id]">) {
               </p>
             </div>
           ) : (
-            <RsvpPanel hikeId={hike.id} isAuthed={!!profile} rsvp={myRsvp} />
+            <div className="flex flex-col gap-4">
+              <RsvpPanel hikeId={hike.id} isAuthed={!!profile} rsvp={myRsvp} />
+              <div className="rounded-xl border border-surface-variant bg-surface-container-lowest p-5">
+                <p className="text-xs font-medium uppercase tracking-wide text-tertiary">
+                  Add to calendar
+                </p>
+                <p className="mt-1 text-sm text-on-surface-variant">
+                  Get a reminder on your own calendar.
+                </p>
+                <div className="mt-3 flex flex-col gap-2">
+                  <a
+                    href={`/hikes/${hike.id}/calendar`}
+                    className="rounded-full border border-outline-variant px-4 py-2 text-center text-sm font-medium text-on-surface hover:bg-surface-container"
+                  >
+                    📅 Apple / Outlook (.ics)
+                  </a>
+                  <a
+                    href={googleCalUrl(
+                      hike,
+                      `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/hikes/${hike.id}`,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-outline-variant px-4 py-2 text-center text-sm font-medium text-on-surface hover:bg-surface-container"
+                  >
+                    📅 Google Calendar
+                  </a>
+                </div>
+              </div>
+            </div>
           )}
         </aside>
       </div>
