@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getCurrentProfile } from "@/lib/data";
 import { signOut } from "@/app/auth/actions";
+import { avatarUrl } from "@/lib/storage";
+import { Avatar } from "./Avatar";
 
 export async function SiteHeader() {
   const profile = await getCurrentProfile();
@@ -41,14 +43,23 @@ export async function SiteHeader() {
           )}
 
           {profile ? (
-            <form action={signOut}>
-              <button
-                type="submit"
-                className="rounded-full border border-outline-variant px-4 py-1.5 font-medium text-on-surface hover:bg-surface-container"
-              >
-                Sign out
-              </button>
-            </form>
+            <div className="flex items-center gap-3">
+              <Link href="/account" aria-label="Your profile" className="hover:opacity-80">
+                <Avatar
+                  name={profile.full_name}
+                  imageUrl={avatarUrl(profile.avatar_path)}
+                  size="sm"
+                />
+              </Link>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="rounded-full border border-outline-variant px-4 py-1.5 font-medium text-on-surface hover:bg-surface-container"
+                >
+                  Sign out
+                </button>
+              </form>
+            </div>
           ) : (
             <div className="flex items-center gap-3">
               <Link

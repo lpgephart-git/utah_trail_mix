@@ -20,9 +20,14 @@ RSVP, comments, and admin activate once Supabase is connected.
 ## Going live with Supabase (free tier)
 
 1. **Create a project** at [supabase.com](https://supabase.com).
-2. **Run the schema:** open the SQL editor and paste all of
-   [`supabase/schema.sql`](supabase/schema.sql). This creates the tables (profiles,
-   hikes, rsvps, comments), row-level security, and the new-user trigger.
+2. **Run the SQL** in the SQL editor, in this order:
+   - [`supabase/schema.sql`](supabase/schema.sql) — profiles, hikes, rsvps, per-hike
+     comments, RLS, and the new-user trigger.
+   - [`supabase/community.sql`](supabase/community.sql) — community feed (posts,
+     replies, likes) + the `post-images` storage bucket.
+   - [`supabase/profile-photos.sql`](supabase/profile-photos.sql) — profile photos
+     (`avatar_path` + the `avatars` storage bucket).
+   - [`supabase/seed.sql`](supabase/seed.sql) — optional: five sample hikes.
 3. **Add env vars:** copy `.env.local.example` → `.env.local` and fill in the Project URL
    and anon key (Supabase → Project Settings → API):
 

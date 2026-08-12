@@ -32,6 +32,7 @@ export type Profile = {
   full_name: string;
   role: MemberRole;
   district: string | null;
+  avatar_path: string | null;
   is_admin: boolean;
   created_at: string;
 };
@@ -77,4 +78,25 @@ export type Comment = {
 /** A hike enriched with counts for list/detail views. */
 export type HikeWithCounts = Hike & {
   going_count: number;
+};
+
+export type FeedComment = {
+  id: string;
+  body: string;
+  created_at: string;
+  author_name: string;
+  author_avatar_url: string | null;
+};
+
+export type FeedPost = {
+  id: string;
+  author_id: string;
+  body: string;
+  image_url: string | null;
+  created_at: string;
+  author_name: string;
+  author_avatar_url: string | null;
+  like_count: number;
+  liked_by_me: boolean;
+  comments: FeedComment[];
 };

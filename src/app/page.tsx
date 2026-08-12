@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { getPublishedHikes } from "@/lib/data";
+import { getCurrentProfile, getUpcomingHikes } from "@/lib/data";
 import { HikeCard } from "@/components/HikeCard";
+import { CommunityFeed } from "@/components/CommunityFeed";
 import { formatHikeDate } from "@/lib/format";
 
 const WELCOME_ROLES = [
@@ -16,7 +17,11 @@ const WELCOME_ROLES = [
 ];
 
 export default async function HomePage() {
-  const hikes = await getPublishedHikes();
+  // Members land on the community feed; visitors see the marketing page.
+  const profile = await getCurrentProfile();
+  if (profile) return <CommunityFeed profile={profile} />;
+
+  const hikes = await getUpcomingHikes();
   const featured = hikes[0];
 
   return (

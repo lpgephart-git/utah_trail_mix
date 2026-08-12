@@ -188,7 +188,19 @@ export default async function HikeDetailPage(props: PageProps<"/hikes/[id]">) {
 
         {/* Sidebar */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <RsvpPanel hikeId={hike.id} isAuthed={!!profile} rsvp={myRsvp} />
+          {new Date(hike.starts_at) < new Date() ? (
+            <div className="rounded-xl border border-surface-variant bg-surface-container p-5">
+              <h3 className="font-display text-lg font-bold text-on-surface">
+                This hike has happened 🎉
+              </h3>
+              <p className="mt-1 text-sm text-on-surface-variant">
+                {hike.going_count} {hike.going_count === 1 ? "person" : "people"}{" "}
+                came along. Scroll down to the board to see the recap and photos.
+              </p>
+            </div>
+          ) : (
+            <RsvpPanel hikeId={hike.id} isAuthed={!!profile} rsvp={myRsvp} />
+          )}
         </aside>
       </div>
     </div>
